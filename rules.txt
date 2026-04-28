@@ -1,0 +1,21 @@
+! Title: Personal Adblock List
+! Description: A personal adblock rules list compatible with AdGuard Home, Pi-hole, and similar tools.
+! Homepage: https://github.com/4msar/personal-adblock-list
+! License: MIT
+! Last modified: 2026-04-28
+!
+! How to use:
+! AdGuard Home: Add the raw URL of this file as a custom filter list.
+! Pi-hole: Add the raw URL of this file under Adlists.
+!
+! Raw URL: https://raw.githubusercontent.com/4msar/personal-adblock-list/main/rules.txt
+!-----------------------------
+
+! === Ads & Trackers ===
+||ads.example.com^
+||tracker.example.com^
+||analytics.example.com^
+
+! === Telemetry ===
+||telemetry.example.com^
+
