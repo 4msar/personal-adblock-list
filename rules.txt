@@ -19,3 +19,6 @@
 ! === Telemetry ===
 ||telemetry.example.com^
 
+! === Compromised Security & Privacy ===
+
+||fundify.xyz^
