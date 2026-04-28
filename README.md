@@ -6,7 +6,7 @@ A personal adblock rules list compatible with [AdGuard Home](https://adguard.com
 
 | File | Raw URL |
 |------|---------|
-| `rules.txt` | [https://raw.githubusercontent.com/4msar/personal-adblock-list/main/rules.txt](https://raw.githubusercontent.com/4msar/personal-adblock-list/main/rules.txt) |
+| `rules.txt` | [https://adrules.msar.me/rules.txt](https://adrules.msar.me/rules.txt) |
 
 ## How to Use
 
@@ -16,7 +16,7 @@ A personal adblock rules list compatible with [AdGuard Home](https://adguard.com
 2. Go to **Filters** → **DNS blocklists** → **Add blocklist** → **Add a custom list**.
 3. Enter a name (e.g. *Personal Adblock List*) and paste the raw URL:
    ```
-   https://raw.githubusercontent.com/4msar/personal-adblock-list/main/rules.txt
+   https://adrules.msar.me/rules.txt
    ```
 4. Click **Save**.
 
@@ -26,7 +26,7 @@ A personal adblock rules list compatible with [AdGuard Home](https://adguard.com
 2. Go to **Group Management** → **Adlists**.
 3. Paste the raw URL into the **Address** field:
    ```
-   https://raw.githubusercontent.com/4msar/personal-adblock-list/main/rules.txt
+   https://adrules.msar.me/rules.txt
    ```
 4. Click **Add** and then run **Tools** → **Update Gravity** to apply the list.
 
@@ -36,7 +36,7 @@ A personal adblock rules list compatible with [AdGuard Home](https://adguard.com
 2. Go to **Filter lists** → **Custom** → **Import**.
 3. Paste the raw URL:
    ```
-   https://raw.githubusercontent.com/4msar/personal-adblock-list/main/rules.txt
+   https://adrules.msar.me/rules.txt
    ```
 4. Apply the changes.
 
