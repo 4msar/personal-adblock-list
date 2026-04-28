@@ -8,7 +8,7 @@
 ! AdGuard Home: Add the raw URL of this file as a custom filter list.
 ! Pi-hole: Add the raw URL of this file under Adlists.
 !
-! Raw URL: https://raw.githubusercontent.com/4msar/personal-adblock-list/main/rules.txt
+! Raw URL: https://adrules.msar.me/rules.txt
 !-----------------------------
 
 ! === Ads & Trackers ===
