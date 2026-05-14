@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Adblock List</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #ec4899;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-alt: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent: #22d3ee;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, #1a0f2e 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        button, .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--surface-alt);
+            color: var(--text-primary);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin: 3rem 0 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid var(--surface-alt);
+            padding-bottom: 0;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s ease;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .tab-button:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Content Sections */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Rules Grid */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .rule-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-alt);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rule-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .rule-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+
+        .rule-card:hover::before {
+            left: 100%;
+        }
+
+        .rule-category {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .rule-items {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .rule-item {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+        }
+
+        .rule-item::before {
+            content: '▸';
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* Scripts Section */
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .script-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-alt);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .script-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .script-card:hover {
+            border-color: var(--secondary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+        }
+
+        .script-card:hover::before {
+            left: 100%;
+        }
+
+        .script-header {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .script-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .script-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .script-version {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .script-description {
+            margin: 1rem 0;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .script-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--surface-alt);
+        }
+
+        .meta-item {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 80px;
+        }
+
+        .meta-value {
+            color: var(--text-secondary);
+            word-break: break-all;
+        }
+
+        /* Guidelines Section */
+        .guidelines-content {
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .guideline-group {
+            background: var(--surface);
+            border-left: 4px solid var(--primary-color);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .guideline-group:hover {
+            border-left-color: var(--secondary-color);
+            transform: translateX(4px);
+        }
+
+        .guideline-group h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .guideline-group ol, .guideline-group ul {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .guideline-group li {
+            margin-bottom: 0.75rem;
+            line-height: 1.8;
+        }
+
+        .code-block {
+            background: var(--background);
+            border: 1px solid var(--surface-alt);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        /* Statistics */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--surface-alt);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--surface-alt);
+            margin-top: 4rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+
+            .rules-grid, .scripts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Copy Button */
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.75rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 1rem;
+            border: 3px solid var(--surface-alt);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🛡️</div>
+                <span style="font-size: 1.5rem; font-weight: bold;">Personal Adblock</span>
+            </div>
+            <h1>Personal Adblock List</h1>
+            <p class="tagline">Curated blocking rules and userscripts for a cleaner browsing experience</p>
+            <div class="cta-buttons">
+                <button class="btn btn-primary" onclick="copyToClipboard('https://adrules.msar.me/rules.txt')">
+                    Copy Rules URL
+                </button>
+                <a href="https://github.com/4msar/personal-adblock-list" class="btn btn-secondary" target="_blank">
+                    View on GitHub
+                </a>
+            </div>
+        </header>
+
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="ruleCount">0</div>
+                <div class="stat-label">Blocking Rules</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="scriptCount">0</div>
+                <div class="stat-label">Userscripts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="categoryCount">0</div>
+                <div class="stat-label">Categories</div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-button active" onclick="switchTab('rules')">📋 Rules</button>
+            <button class="tab-button" onclick="switchTab('scripts')">📜 Scripts</button>
+            <button class="tab-button" onclick="switchTab('guidelines')">📚 Guidelines</button>
+        </div>
+
+        <!-- Rules Tab -->
+        <div id="rules" class="tab-content active">
+            <div class="rules-grid" id="rulesContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading rules...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts Tab -->
+        <div id="scripts" class="tab-content">
+            <div class="scripts-grid" id="scriptsContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading scripts...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Guidelines Tab -->
+        <div id="guidelines" class="tab-content">
+            <div class="guidelines-content" id="guidelinesContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading guidelines...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/4msar/personal-adblock-list" target="_blank">GitHub</a>
+            <a href="https://github.com/4msar" target="_blank">Author</a>
+            <a href="https://msar.me" target="_blank">Portfolio</a>
+        </div>
+        <p>&copy; 2026 Personal Adblock List. Licensed under MIT.</p>
+    </footer>
+
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        // Parse rules from raw GitHub content
+        async function loadRules() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/4msar/personal-adblock-list/main/rules.txt');
+                const text = await response.text();
+                return parseRules(text);
+            } catch (error) {
+                console.error('Error loading rules:', error);
+                return {};
+            }
+        }
+
+        // Parse rules into categories
+        function parseRules(content) {
+            const lines = content.split('\n');
+            const categories = {};
+            let currentCategory = 'General';
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+
+                // Category headers
+                if (trimmed.startsWith('! ===')) {
+                    currentCategory = trimmed.replace(/[!=]/g, '').trim();
+                    if (!categories[currentCategory]) {
+                        categories[currentCategory] = [];
+                    }
+                    return;
+                }
+
+                // Skip comments and empty lines
+                if (!trimmed || trimmed.startsWith('!')) return;
+
+                // Add rule to current category
+                if (!categories[currentCategory]) {
+                    categories[currentCategory] = [];
+                }
+                categories[currentCategory].push(trimmed);
+            });
+
+            return categories;
+        }
+
+        // Render rules
+        function renderRules(categories) {
+            const container = document.getElementById('rulesContainer');
+            const totalRules = Object.values(categories).flat().length;
+            
+            document.getElementById('ruleCount').textContent = totalRules;
+            document.getElementById('categoryCount').textContent = Object.keys(categories).length;
+
+            let html = '';
+            Object.entries(categories).forEach(([category, rules]) => {
+                if (rules.length === 0) return;
+
+                html += `
+                    <div class="rule-card">
+                        <div class="rule-category">${category}</div>
+                        <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                            ${rules.length} rule${rules.length > 1 ? 's' : ''}
+                        </p>
+                        <ul class="rule-items">
+                            ${rules.slice(0, 5).map(rule => `
+                                <li class="rule-item" title="${rule}">${rule}</li>
+                            `).join('')}
+                            ${rules.length > 5 ? `
+                                <li class="rule-item" style="color: var(--primary-color); margin-top: 0.5rem;">
+                                    +${rules.length - 5} more
+                                </li>
+                            ` : ''}
+                        </ul>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Load and render scripts
+        function renderScripts() {
+            const scripts = [
+                {
+                    name: 'Filter Facebook',
+                    version: '1.0',
+                    description: 'Filter all sponsored posts and reels from Facebook while browsing. Automatically removes ads and promotional content.',
+                    author: 'Saiful Alam',
+                    includes: ['facebook.com', 'fb.com'],
+                    url: 'https://adrules.msar.me/filter.js',
+                    downloadUrl: 'https://adrules.msar.me/filter.js',
+                    features: ['Remove sponsored posts', 'Hide reels section', 'Automatic detection']
+                }
+            ];
+
+            const container = document.getElementById('scriptsContainer');
+            document.getElementById('scriptCount').textContent = scripts.length;
+
+            let html = '';
+            scripts.forEach(script => {
+                html += `
+                    <div class="script-card">
+                        <div class="script-header">
+                            <div class="script-icon">📜</div>
+                            <div class="script-info">
+                                <h3>${script.name}</h3>
+                                <div class="script-version">v${script.version}</div>
+                            </div>
+                        </div>
+                        <p class="script-description">${script.description}</p>
+                        
+                        <div style="margin: 1rem 0; padding: 0.75rem; background: var(--background); border-radius: 0.25rem; border-left: 3px solid var(--accent);">
+                            <strong style="color: var(--accent);">Features:</strong>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: var(--text-secondary);">
+                                ${script.features.map(f => `<li>${f}</li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="script-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Author:</span>
+                                <span class="meta-value">${script.author}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Works on:</span>
+                                <span class="meta-value">${script.includes.join(', ')}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">URL:</span>
+                                <span class="meta-value">${script.downloadUrl}</span>
+                            </div>
+                        </div>
+                        
+                        <button class="copy-btn" onclick="copyToClipboard('${script.downloadUrl}')">
+                            📋 Copy URL
+                        </button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Render guidelines
+        function renderGuidelines() {
+            const container = document.getElementById('guidelinesContainer');
+            const html = `
+                <div class="guideline-group">
+                    <h3>📖 AdGuard Home</h3>
+                    <ol>
+                        <li>Open the AdGuard Home web UI</li>
+                        <li>Go to <strong>Filters</strong> → <strong>DNS blocklists</strong> → <strong>Add blocklist</strong></li>
+                        <li>Select <strong>Add a custom list</strong></li>
+                        <li>Enter a name (e.g., "Personal Adblock List")</li>
+                        <li>Paste the raw URL:
+                            <div class="code-block">https://adrules.msar.me/rules.txt</div>
+                        </li>
+                        <li>Click <strong>Save</strong></li>
+                    </ol>
+                </div>
+
+                <div class="guideline-group">
+                    <h3>⚫ Pi-hole</h3>
+                    <ol>
+                        <li>Open the Pi-hole admin panel</li>
+                        <li>Go to <strong>Group Management</strong> → <strong>Adlists</strong></li>
+                        <li>Paste the raw URL into the <strong>Address</strong> field:
+                            <div class="code-block">https://adrules.msar.me/rules.txt</div>
+                        </li>
+                        <li>Click <strong>Add</strong></li>
+                        <li>Run <strong>Tools</strong> → <strong>Update Gravity</strong> to apply the list</li>
+                    </ol>
+                </div>
+
+                <div class="guideline-group">
+                    <h3>🔗 uBlock Origin / AdGuard Browser Extension</h3>
+                    <ol>
+                        <li>Open the extension settings</li>
+                        <li>Go to <strong>Filter lists</strong> → <strong>Custom</strong> → <strong>Import</strong></li>
+                        <li>Paste the raw URL:
+                            <div class="code-block">https://adrules.msar.me/rules.txt</div>
+                        </li>
+                        <li>Click <strong>Apply</strong> or confirm the changes</li>
+                    </ol>
+                </div>
+
+                <div class="guideline-group">
+                    <h3>📝 Rule Format</h3>
+                    <p>Rules follow the <strong>AdBlock filter syntax</strong>, compatible with:</p>
+                    <ul>
+                        <li>AdGuard Home</li>
+                        <li>Pi-hole (via built-in AdBlock parser)</li>
+                        <li>uBlock Origin</li>
+                        <li>AdGuard Browser Extension</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Example rules:</strong></p>
+                    <div class="code-block">
+! This is a comment
+||example.com^          ! Block a domain and all its subdomains
+@@||example.com^        ! Whitelist / unblock a domain
+                    </div>
+                </div>
+
+                <div class="guideline-group">
+                    <h3>🎬 Installing Userscripts</h3>
+                    <p>Userscripts require a script manager browser extension:</p>
+                    <ul>
+                        <li><strong>Tampermonkey</strong> - Chrome, Firefox, Edge, Opera, Safari</li>
+                        <li><strong>Greasemonkey</strong> - Firefox</li>
+                        <li><strong>Violentmonkey</strong> - Chrome, Firefox, Edge, Opera</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>To install a userscript:</strong></p>
+                    <ol>
+                        <li>Install a script manager extension for your browser</li>
+                        <li>Click the script URL or copy it</li>
+                        <li>The script manager will prompt to install</li>
+                        <li>Confirm the installation</li>
+                        <li>The script will auto-update from the provided URL</li>
+                    </ol>
+                </div>
+
+                <div class="guideline-group">
+                    <h3>⚠️ Important Notes</h3>
+                    <ul>
+                        <li><strong>Performance:</strong> Large blocklists may impact performance on lower-end devices</li>
+                        <li><strong>False Positives:</strong> Some rules may block legitimate content; adjust as needed</li>
+                        <li><strong>Updates:</strong> Regularly update your blocklists to stay protected</li>
+                        <li><strong>Privacy:</strong> These lists are personal and not affiliated with any commercial service</li>
+                        <li><strong>Compatibility:</strong> Some rules may not work with all tools; test before deployment</li>
+                    </ul>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        // Initialize on page load
+        async function init() {
+            const rules = await loadRules();
+            renderRules(rules);
+            renderScripts();
+            renderGuidelines();
+        }
+
+        // Load content when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    </script>
+</body>
+</html>
