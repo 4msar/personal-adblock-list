@@ -23,7 +23,7 @@ function main() {
         anchorTags.some(
           (link) =>
             link.href.includes("/ads/") ||
-            (link.innerText === "" && a.querySelectorAll("canvas").length > 9),
+            (link.innerText === "" && link.querySelectorAll("canvas").length > 9),
         )
         // End filtering
       ) {
