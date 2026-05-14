@@ -44,25 +44,32 @@ function main() {
       .forEach((item) => item.remove());
   };
 
+
   const init = () => {
-    const timer = setTimeout(() => {
-      clearTimeout(timer);
-      removeSponsored();
-      hideCards();
-    }, 100);
-  };
+    removeSponsored();
+    hideCards();
+  }
+
 
   new MutationObserver(init).observe(document.body, {
-    childList: true,
-    subtree: true,
+      childList: true,
+      subtree: true,
   });
+  // Fallback: sponsored blocks sometimes mount on scroll / after paint
+  let scrollTimer;
 
-  window.addEventListener("scroll", init, { passive: true });
-  document.addEventListener("scroll", init, {
-    passive: true,
-    capture: true,
+  const onScroll = () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(init, 100);
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("scroll", onScroll, {
+      passive: true,
+      capture: true,
   });
-  if ("onscrollend" in window) window.addEventListener("scrollend", init, { passive: true });
+  if ("onscrollend" in window)
+      window.addEventListener("scrollend", onScroll, { passive: true });
 }
 
 main();
