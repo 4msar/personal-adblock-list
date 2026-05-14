@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name    Filter Facebook
-// @version 1.0
+// @version 1.1
 // @description Filter all sponsored post and reels from facebook while browsing.
 // @downloadURL  https://adrules.msar.me/filter.js
 // @updateURL    https://adrules.msar.me/filter.js
