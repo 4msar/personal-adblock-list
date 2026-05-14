@@ -31,11 +31,12 @@ function main() {
       }
     });
   };
-  const hideReels = () => {
+  const hideCards = () => {
+    const cardTitles = ["People you may know", "Reels"];
     [...document.querySelectorAll('div[data-focus="feed_story"]')]
       .filter((el) => {
         const match = [...el.querySelectorAll("h1,h2,h3,h4,span,div")].filter(
-          (el) => el.textContent.trim() === "Reels",
+          (el) => cardTitles.includes(el.textContent.trim()),
         );
   
         return match.length > 0;
@@ -47,7 +48,7 @@ function main() {
     const timer = setTimeout(() => {
       clearTimeout(timer);
       removeSponsored();
-      hideReels();
+      hideCards();
     }, 100);
   };
 
