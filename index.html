@@ -4,679 +4,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Adblock List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #6366f1;
-            --secondary-color: #ec4899;
-            --background: #0f172a;
-            --surface: #1e293b;
-            --surface-alt: #334155;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --accent: #22d3ee;
-            --success: #10b981;
-            --danger: #ef4444;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--background) 0%, #1a0f2e 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow-x: hidden;
+            @apply bg-gray-50;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+        .gradient-text {
+            @apply bg-gradient-to-r from-indigo-600 to-pink-600 bg-clip-text text-transparent;
         }
 
-        /* Header */
-        header {
-            text-align: center;
-            padding: 4rem 2rem 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 24px;
-        }
-
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 1;
-        }
-
-        .tagline {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 1;
-        }
-
-        button, .btn {
-            padding: 0.875rem 2rem;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-secondary {
-            background: var(--surface-alt);
-            color: var(--text-primary);
-            border: 1px solid var(--primary-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Navigation Tabs */
-        .nav-tabs {
-            display: flex;
-            gap: 1rem;
-            margin: 3rem 0 2rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            border-bottom: 1px solid var(--surface-alt);
-            padding-bottom: 0;
-        }
-
-        .tab-button {
-            padding: 1rem 1.5rem;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            position: relative;
-            transition: color 0.3s ease;
-            border-bottom: 2px solid transparent;
-            margin-bottom: -1px;
-        }
-
-        .tab-button:hover {
-            color: var(--primary-color);
-        }
-
-        .tab-button.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-        }
-
-        /* Content Sections */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Rules Grid */
-        .rules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .rule-card {
-            background: var(--surface);
-            border: 1px solid var(--surface-alt);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .rule-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .rule-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
-        }
-
-        .rule-card:hover::before {
-            left: 100%;
-        }
-
-        .rule-category {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
-        }
-
-        .rule-items {
-            list-style: none;
-            margin-top: 1rem;
-        }
-
-        .rule-item {
-            padding: 0.5rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            word-break: break-all;
-        }
-
-        .rule-item::before {
-            content: '▸';
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        /* Scripts Section */
-        .scripts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .script-card {
-            background: var(--surface);
-            border: 1px solid var(--surface-alt);
-            border-radius: 0.75rem;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .script-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .script-card:hover {
-            border-color: var(--secondary-color);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
-        }
-
-        .script-card:hover::before {
-            left: 100%;
-        }
-
-        .script-header {
-            display: flex;
-            align-items: start;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .script-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-
-        .script-info h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .script-version {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-
-        .script-description {
-            margin: 1rem 0;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .script-meta {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--surface-alt);
-        }
-
-        .meta-item {
-            display: flex;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .meta-label {
-            font-weight: 600;
-            color: var(--primary-color);
-            min-width: 80px;
-        }
-
-        .meta-value {
-            color: var(--text-secondary);
-            word-break: break-all;
-        }
-
-        /* Guidelines Section */
-        .guidelines-content {
-            max-width: 800px;
-            margin: 2rem auto;
-        }
-
-        .guideline-group {
-            background: var(--surface);
-            border-left: 4px solid var(--primary-color);
-            border-radius: 0.5rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .guideline-group:hover {
-            border-left-color: var(--secondary-color);
-            transform: translateX(4px);
-        }
-
-        .guideline-group h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary-color);
-        }
-
-        .guideline-group ol, .guideline-group ul {
-            margin-left: 1.5rem;
-            color: var(--text-secondary);
-        }
-
-        .guideline-group li {
-            margin-bottom: 0.75rem;
-            line-height: 1.8;
-        }
-
-        .code-block {
-            background: var(--background);
-            border: 1px solid var(--surface-alt);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin: 1rem 0;
-            overflow-x: auto;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.9rem;
-        }
-
-        /* Statistics */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--surface-alt);
-            border-radius: 0.75rem;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            border-color: var(--primary-color);
-            transform: scale(1.05);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--surface-alt);
-            margin-top: 4rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--secondary-color);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            .tagline {
-                font-size: 1rem;
-            }
-
-            .rules-grid, .scripts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-tabs {
-                gap: 0.5rem;
-            }
-
-            .tab-button {
-                padding: 0.75rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            .stats {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Copy Button */
-        .copy-btn {
-            background: transparent;
-            border: 1px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 0.75rem;
-        }
-
-        .copy-btn:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .copy-btn.copied {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
-        }
-
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 2rem;
+        .card-hover {
+            @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
         }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 1rem;
-            border: 3px solid var(--surface-alt);
-            border-top-color: var(--primary-color);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: var(--text-secondary);
-        }
-
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+            @apply inline-block w-10 h-10 border-4 border-gray-300 border-t-indigo-600 rounded-full animate-spin;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <div class="logo">
-                <div class="logo-icon">🛡️</div>
-                <span style="font-size: 1.5rem; font-weight: bold;">Personal Adblock</span>
-            </div>
-            <h1>Personal Adblock List</h1>
-            <p class="tagline">Curated blocking rules and userscripts for a cleaner browsing experience</p>
-            <div class="cta-buttons">
-                <button class="btn btn-primary" onclick="copyToClipboard('https://adrules.msar.me/rules.txt')">
-                    Copy Rules URL
-                </button>
-                <a href="https://github.com/4msar/personal-adblock-list" class="btn btn-secondary" target="_blank">
-                    View on GitHub
+    <!-- Navigation -->
+    <nav class="sticky top-0 bg-white border-b border-gray-200 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="text-2xl">🛡️</div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900">Personal Adblock</h1>
+                        <p class="text-xs text-gray-500">Curated blocking rules</p>
+                    </div>
+                </div>
+                <a href="https://github.com/4msar/personal-adblock-list" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+                    <span>GitHub</span>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.868-.013-1.703-2.782.603-3.369-1.343-3.369-1.343-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.545 2.91 1.186.092-.923.35-1.545.636-1.9-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0110 4.817c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C17.137 18.194 20 14.44 20 10.017 20 4.484 15.522 0 10 0z" clip-rule="evenodd"/></svg>
                 </a>
             </div>
-        </header>
+        </div>
+    </nav>
 
-        <!-- Statistics -->
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="ruleCount">0</div>
-                <div class="stat-label">Blocking Rules</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="scriptCount">0</div>
-                <div class="stat-label">Userscripts</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="categoryCount">0</div>
-                <div class="stat-label">Categories</div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Hero Section -->
+        <div class="py-12 sm:py-16">
+            <div class="text-center">
+                <h2 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+                    Clean Browsing Made Simple
+                </h2>
+                <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Comprehensive adblock rules and userscripts to enhance your browsing experience. Compatible with AdGuard, Pi-hole, uBlock Origin, and more.
+                </p>
+                <button class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors" onclick="copyToClipboard('https://adrules.msar.me/rules.txt')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    Copy Rules URL
+                </button>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="tab-button active" onclick="switchTab('rules')">📋 Rules</button>
-            <button class="tab-button" onclick="switchTab('scripts')">📜 Scripts</button>
-            <button class="tab-button" onclick="switchTab('guidelines')">📚 Guidelines</button>
+        <!-- Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white rounded-lg border border-gray-200 p-6 card-hover">
+                <div class="text-4xl font-bold gradient-text mb-2" id="ruleCount">0</div>
+                <p class="text-gray-600 font-medium">Blocking Rules</p>
+            </div>
+            <div class="bg-white rounded-lg border border-gray-200 p-6 card-hover">
+                <div class="text-4xl font-bold gradient-text mb-2" id="scriptCount">0</div>
+                <p class="text-gray-600 font-medium">Userscripts</p>
+            </div>
+            <div class="bg-white rounded-lg border border-gray-200 p-6 card-hover">
+                <div class="text-4xl font-bold gradient-text mb-2" id="categoryCount">0</div>
+                <p class="text-gray-600 font-medium">Categories</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="border-b border-gray-200 mb-8">
+            <div class="flex gap-8">
+                <button class="tab-button active pb-4 px-1 border-b-2 border-indigo-600 font-medium text-gray-900 hover:text-indigo-600 transition-colors" onclick="switchTab('rules', event)">
+                    📋 Rules
+                </button>
+                <button class="tab-button pb-4 px-1 border-b-2 border-transparent font-medium text-gray-600 hover:text-gray-900 transition-colors" onclick="switchTab('scripts', event)">
+                    📜 Scripts
+                </button>
+                <button class="tab-button pb-4 px-1 border-b-2 border-transparent font-medium text-gray-600 hover:text-gray-900 transition-colors" onclick="switchTab('guidelines', event)">
+                    📚 Guidelines
+                </button>
+            </div>
         </div>
 
         <!-- Rules Tab -->
-        <div id="rules" class="tab-content active">
-            <div class="rules-grid" id="rulesContainer">
-                <div class="loading">
+        <div id="rules" class="tab-content active mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="rulesContainer">
+                <div class="col-span-full flex justify-center py-12">
                     <div class="spinner"></div>
-                    <p>Loading rules...</p>
                 </div>
             </div>
         </div>
 
         <!-- Scripts Tab -->
-        <div id="scripts" class="tab-content">
-            <div class="scripts-grid" id="scriptsContainer">
-                <div class="loading">
+        <div id="scripts" class="tab-content hidden mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="scriptsContainer">
+                <div class="col-span-full flex justify-center py-12">
                     <div class="spinner"></div>
-                    <p>Loading scripts...</p>
                 </div>
             </div>
         </div>
 
         <!-- Guidelines Tab -->
-        <div id="guidelines" class="tab-content">
-            <div class="guidelines-content" id="guidelinesContainer">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Loading guidelines...</p>
-                </div>
-            </div>
+        <div id="guidelines" class="tab-content hidden mb-12" id="guidelinesContainer">
+            <!-- Guidelines will be rendered here -->
         </div>
-    </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-links">
-            <a href="https://github.com/4msar/personal-adblock-list" target="_blank">GitHub</a>
-            <a href="https://github.com/4msar" target="_blank">Author</a>
-            <a href="https://msar.me" target="_blank">Portfolio</a>
-        </div>
-        <p>&copy; 2026 Personal Adblock List. Licensed under MIT.</p>
-    </footer>
+        <!-- Footer -->
+        <footer class="border-t border-gray-200 py-8 mt-12">
+            <div class="flex flex-col sm:flex-row justify-center gap-6 mb-6">
+                <a href="https://github.com/4msar/personal-adblock-list" target="_blank" class="text-indigo-600 hover:text-indigo-700 font-medium transition-colors">GitHub</a>
+                <a href="https://github.com/4msar" target="_blank" class="text-indigo-600 hover:text-indigo-700 font-medium transition-colors">Author</a>
+                <a href="https://msar.me" target="_blank" class="text-indigo-600 hover:text-indigo-700 font-medium transition-colors">Portfolio</a>
+            </div>
+            <p class="text-center text-gray-500 text-sm">&copy; 2026 Personal Adblock List. Licensed under MIT.</p>
+        </footer>
+    </div>
 
     <script>
         // Tab switching
-        function switchTab(tabName) {
-            // Hide all tabs
+        function switchTab(tabName, event) {
+            // Hide all tabs and deactivate buttons
             document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
                 tab.classList.remove('active');
             });
             document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
+                btn.classList.remove('border-indigo-600', 'text-gray-900');
+                btn.classList.add('border-transparent', 'text-gray-600');
             });
 
-            // Show selected tab
+            // Show selected tab and activate button
+            document.getElementById(tabName).classList.remove('hidden');
             document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            event.target.classList.remove('border-transparent', 'text-gray-600');
+            event.target.classList.add('border-indigo-600', 'text-gray-900');
         }
 
         // Copy to clipboard
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                const btn = event.target;
-                const originalText = btn.textContent;
-                btn.textContent = '✓ Copied!';
-                btn.classList.add('copied');
+                const btn = event.target.closest('button');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg> Copied!';
+                btn.classList.add('bg-green-600', '!hover:bg-green-700');
                 setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.classList.remove('copied');
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('bg-green-600', '!hover:bg-green-700');
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy:', err);
@@ -739,18 +223,22 @@
                 if (rules.length === 0) return;
 
                 html += `
-                    <div class="rule-card">
-                        <div class="rule-category">${category}</div>
-                        <p style="margin-bottom: 1rem; color: var(--text-secondary);">
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 card-hover">
+                        <div class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full mb-4">
+                            ${category}
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">
                             ${rules.length} rule${rules.length > 1 ? 's' : ''}
                         </p>
-                        <ul class="rule-items">
-                            ${rules.slice(0, 5).map(rule => `
-                                <li class="rule-item" title="${rule}">${rule}</li>
+                        <ul class="space-y-2">
+                            ${rules.slice(0, 4).map(rule => `
+                                <li class="text-xs text-gray-700 font-mono bg-gray-50 rounded px-2 py-1 truncate" title="${rule}">
+                                    ${rule}
+                                </li>
                             `).join('')}
-                            ${rules.length > 5 ? `
-                                <li class="rule-item" style="color: var(--primary-color); margin-top: 0.5rem;">
-                                    +${rules.length - 5} more
+                            ${rules.length > 4 ? `
+                                <li class="text-xs text-indigo-600 font-medium mt-3">
+                                    +${rules.length - 4} more rule${rules.length - 4 > 1 ? 's' : ''}
                                 </li>
                             ` : ''}
                         </ul>
@@ -758,21 +246,20 @@
                 `;
             });
 
-            container.innerHTML = html;
+            container.innerHTML = html || '<div class="col-span-full text-center text-gray-500">No rules found</div>';
         }
 
-        // Load and render scripts
+        // Render scripts
         function renderScripts() {
             const scripts = [
                 {
                     name: 'Filter Facebook',
                     version: '1.0',
-                    description: 'Filter all sponsored posts and reels from Facebook while browsing. Automatically removes ads and promotional content.',
+                    description: 'Remove sponsored posts and reels from Facebook for a cleaner feed.',
                     author: 'Saiful Alam',
                     includes: ['facebook.com', 'fb.com'],
                     url: 'https://adrules.msar.me/filter.js',
-                    downloadUrl: 'https://adrules.msar.me/filter.js',
-                    features: ['Remove sponsored posts', 'Hide reels section', 'Automatic detection']
+                    downloadUrl: 'https://adrules.msar.me/filter.js'
                 }
             ];
 
@@ -782,40 +269,41 @@
             let html = '';
             scripts.forEach(script => {
                 html += `
-                    <div class="script-card">
-                        <div class="script-header">
-                            <div class="script-icon">📜</div>
-                            <div class="script-info">
-                                <h3>${script.name}</h3>
-                                <div class="script-version">v${script.version}</div>
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 card-hover flex flex-col">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">${script.name}</h3>
+                                <p class="text-xs text-gray-500">v${script.version}</p>
                             </div>
+                            <div class="text-2xl">📜</div>
                         </div>
-                        <p class="script-description">${script.description}</p>
                         
-                        <div style="margin: 1rem 0; padding: 0.75rem; background: var(--background); border-radius: 0.25rem; border-left: 3px solid var(--accent);">
-                            <strong style="color: var(--accent);">Features:</strong>
-                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: var(--text-secondary);">
-                                ${script.features.map(f => `<li>${f}</li>`).join('')}
-                            </ul>
+                        <p class="text-gray-600 text-sm mb-4 flex-grow">${script.description}</p>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+                            <div class="text-xs font-semibold text-gray-900 mb-2">Works on:</div>
+                            <div class="flex flex-wrap gap-2">
+                                ${script.includes.map(domain => `
+                                    <span class="text-xs bg-white border border-gray-300 text-gray-700 px-2 py-1 rounded">
+                                        ${domain}
+                                    </span>
+                                `).join('')}
+                            </div>
                         </div>
 
-                        <div class="script-meta">
-                            <div class="meta-item">
-                                <span class="meta-label">Author:</span>
-                                <span class="meta-value">${script.author}</span>
+                        <div class="space-y-2 text-sm mb-4">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Author:</span>
+                                <span class="text-gray-900 font-medium">${script.author}</span>
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Works on:</span>
-                                <span class="meta-value">${script.includes.join(', ')}</span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">URL:</span>
-                                <span class="meta-value">${script.downloadUrl}</span>
+                            <div class="flex justify-between items-start">
+                                <span class="text-gray-600">URL:</span>
+                                <span class="text-gray-600 font-mono text-xs truncate ml-2">${script.downloadUrl.split('/').pop()}</span>
                             </div>
                         </div>
                         
-                        <button class="copy-btn" onclick="copyToClipboard('${script.downloadUrl}')">
-                            📋 Copy URL
+                        <button class="w-full px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors" onclick="copyToClipboard('${script.downloadUrl}')">
+                            📋 Copy Script URL
                         </button>
                     </div>
                 `;
@@ -828,89 +316,226 @@
         function renderGuidelines() {
             const container = document.getElementById('guidelinesContainer');
             const html = `
-                <div class="guideline-group">
-                    <h3>📖 AdGuard Home</h3>
-                    <ol>
-                        <li>Open the AdGuard Home web UI</li>
-                        <li>Go to <strong>Filters</strong> → <strong>DNS blocklists</strong> → <strong>Add blocklist</strong></li>
-                        <li>Select <strong>Add a custom list</strong></li>
-                        <li>Enter a name (e.g., "Personal Adblock List")</li>
-                        <li>Paste the raw URL:
-                            <div class="code-block">https://adrules.msar.me/rules.txt</div>
-                        </li>
-                        <li>Click <strong>Save</strong></li>
-                    </ol>
-                </div>
-
-                <div class="guideline-group">
-                    <h3>⚫ Pi-hole</h3>
-                    <ol>
-                        <li>Open the Pi-hole admin panel</li>
-                        <li>Go to <strong>Group Management</strong> → <strong>Adlists</strong></li>
-                        <li>Paste the raw URL into the <strong>Address</strong> field:
-                            <div class="code-block">https://adrules.msar.me/rules.txt</div>
-                        </li>
-                        <li>Click <strong>Add</strong></li>
-                        <li>Run <strong>Tools</strong> → <strong>Update Gravity</strong> to apply the list</li>
-                    </ol>
-                </div>
-
-                <div class="guideline-group">
-                    <h3>🔗 uBlock Origin / AdGuard Browser Extension</h3>
-                    <ol>
-                        <li>Open the extension settings</li>
-                        <li>Go to <strong>Filter lists</strong> → <strong>Custom</strong> → <strong>Import</strong></li>
-                        <li>Paste the raw URL:
-                            <div class="code-block">https://adrules.msar.me/rules.txt</div>
-                        </li>
-                        <li>Click <strong>Apply</strong> or confirm the changes</li>
-                    </ol>
-                </div>
-
-                <div class="guideline-group">
-                    <h3>📝 Rule Format</h3>
-                    <p>Rules follow the <strong>AdBlock filter syntax</strong>, compatible with:</p>
-                    <ul>
-                        <li>AdGuard Home</li>
-                        <li>Pi-hole (via built-in AdBlock parser)</li>
-                        <li>uBlock Origin</li>
-                        <li>AdGuard Browser Extension</li>
-                    </ul>
-                    <p style="margin-top: 1rem;"><strong>Example rules:</strong></p>
-                    <div class="code-block">
-! This is a comment
-||example.com^          ! Block a domain and all its subdomains
-@@||example.com^        ! Whitelist / unblock a domain
+                <div class="space-y-6">
+                    <!-- AdGuard Home -->
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-50 to-pink-50 px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">📖 AdGuard Home</h3>
+                        </div>
+                        <div class="p-6">
+                            <ol class="space-y-3 text-gray-700">
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">1.</span>
+                                    <span>Open the AdGuard Home web UI</span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">2.</span>
+                                    <span>Go to <strong>Filters</strong> → <strong>DNS blocklists</strong> → <strong>Add blocklist</strong></span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">3.</span>
+                                    <span>Select <strong>Add a custom list</strong></span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">4.</span>
+                                    <span>Enter a name like "Personal Adblock List"</span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">5.</span>
+                                    <span>Paste the URL:</span>
+                                </li>
+                            </ol>
+                            <div class="mt-4 bg-gray-900 text-gray-100 font-mono text-sm rounded-lg p-4 overflow-x-auto">
+                                https://adrules.msar.me/rules.txt
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="guideline-group">
-                    <h3>🎬 Installing Userscripts</h3>
-                    <p>Userscripts require a script manager browser extension:</p>
-                    <ul>
-                        <li><strong>Tampermonkey</strong> - Chrome, Firefox, Edge, Opera, Safari</li>
-                        <li><strong>Greasemonkey</strong> - Firefox</li>
-                        <li><strong>Violentmonkey</strong> - Chrome, Firefox, Edge, Opera</li>
-                    </ul>
-                    <p style="margin-top: 1rem;"><strong>To install a userscript:</strong></p>
-                    <ol>
-                        <li>Install a script manager extension for your browser</li>
-                        <li>Click the script URL or copy it</li>
-                        <li>The script manager will prompt to install</li>
-                        <li>Confirm the installation</li>
-                        <li>The script will auto-update from the provided URL</li>
-                    </ol>
-                </div>
+                    <!-- Pi-hole -->
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-50 to-pink-50 px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">⚫ Pi-hole</h3>
+                        </div>
+                        <div class="p-6">
+                            <ol class="space-y-3 text-gray-700">
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">1.</span>
+                                    <span>Open the Pi-hole admin panel</span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">2.</span>
+                                    <span>Go to <strong>Group Management</strong> → <strong>Adlists</strong></span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">3.</span>
+                                    <span>Paste the URL into the <strong>Address</strong> field:</span>
+                                </li>
+                            </ol>
+                            <div class="mt-4 bg-gray-900 text-gray-100 font-mono text-sm rounded-lg p-4 overflow-x-auto">
+                                https://adrules.msar.me/rules.txt
+                            </div>
+                            <ol class="space-y-3 text-gray-700 mt-4">
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">4.</span>
+                                    <span>Click <strong>Add</strong></span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">5.</span>
+                                    <span>Run <strong>Tools</strong> → <strong>Update Gravity</strong></span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
 
-                <div class="guideline-group">
-                    <h3>⚠️ Important Notes</h3>
-                    <ul>
-                        <li><strong>Performance:</strong> Large blocklists may impact performance on lower-end devices</li>
-                        <li><strong>False Positives:</strong> Some rules may block legitimate content; adjust as needed</li>
-                        <li><strong>Updates:</strong> Regularly update your blocklists to stay protected</li>
-                        <li><strong>Privacy:</strong> These lists are personal and not affiliated with any commercial service</li>
-                        <li><strong>Compatibility:</strong> Some rules may not work with all tools; test before deployment</li>
-                    </ul>
+                    <!-- Browser Extensions -->
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-50 to-pink-50 px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">🔗 uBlock Origin / AdGuard</h3>
+                        </div>
+                        <div class="p-6">
+                            <ol class="space-y-3 text-gray-700">
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">1.</span>
+                                    <span>Open the extension settings</span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">2.</span>
+                                    <span>Go to <strong>Filter lists</strong> → <strong>Custom</strong> → <strong>Import</strong></span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">3.</span>
+                                    <span>Paste the URL:</span>
+                                </li>
+                            </ol>
+                            <div class="mt-4 bg-gray-900 text-gray-100 font-mono text-sm rounded-lg p-4 overflow-x-auto">
+                                https://adrules.msar.me/rules.txt
+                            </div>
+                            <ol class="space-y-3 text-gray-700 mt-4">
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">4.</span>
+                                    <span>Click <strong>Apply</strong> or confirm changes</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Rule Format -->
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-50 to-pink-50 px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">📝 Rule Format</h3>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-700 mb-4">Rules follow the <strong>AdBlock filter syntax</strong>, compatible with:</p>
+                            <ul class="space-y-2 text-gray-700 mb-6">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600">✓</span>
+                                    <span>AdGuard Home</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600">✓</span>
+                                    <span>Pi-hole (via AdBlock parser)</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600">✓</span>
+                                    <span>uBlock Origin</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600">✓</span>
+                                    <span>AdGuard Browser Extension</span>
+                                </li>
+                            </ul>
+                            <p class="text-gray-700 font-medium mb-2">Example rules:</p>
+                            <div class="bg-gray-900 text-gray-100 font-mono text-sm rounded-lg p-4 space-y-2">
+                                <div>! Block a domain</div>
+                                <div>||example.com^</div>
+                                <div></div>
+                                <div>! Whitelist a domain</div>
+                                <div>@@||example.com^</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Userscripts -->
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-50 to-pink-50 px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">🎬 Installing Userscripts</h3>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-gray-700 font-medium mb-4">Userscripts require a script manager:</p>
+                            <ul class="space-y-2 text-gray-700 mb-6">
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600">•</span>
+                                    <span><strong>Tampermonkey</strong> - Chrome, Firefox, Edge, Opera, Safari</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600">•</span>
+                                    <span><strong>Greasemonkey</strong> - Firefox</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <span class="text-indigo-600">•</span>
+                                    <span><strong>Violentmonkey</strong> - Chrome, Firefox, Edge, Opera</span>
+                                </li>
+                            </ul>
+                            <p class="text-gray-700 font-medium mb-4">Installation steps:</p>
+                            <ol class="space-y-3 text-gray-700">
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">1.</span>
+                                    <span>Install a script manager extension</span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">2.</span>
+                                    <span>Click the script URL</span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">3.</span>
+                                    <span>Confirm installation</span>
+                                </li>
+                                <li class="flex gap-4">
+                                    <span class="font-semibold text-indigo-600 flex-shrink-0">4.</span>
+                                    <span>The script auto-updates</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Important Notes -->
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="bg-gradient-to-r from-indigo-50 to-pink-50 px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">⚠️ Important Notes</h3>
+                        </div>
+                        <div class="p-6">
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex gap-3">
+                                    <span class="text-yellow-500 flex-shrink-0">⚠️</span>
+                                    <div>
+                                        <span class="font-medium text-gray-900">Performance:</span>
+                                        <p class="text-sm">Large blocklists may impact performance on lower-end devices</p>
+                                    </div>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="text-yellow-500 flex-shrink-0">⚠️</span>
+                                    <div>
+                                        <span class="font-medium text-gray-900">False Positives:</span>
+                                        <p class="text-sm">Some rules may block legitimate content; adjust as needed</p>
+                                    </div>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="text-yellow-500 flex-shrink-0">⚠️</span>
+                                    <div>
+                                        <span class="font-medium text-gray-900">Updates:</span>
+                                        <p class="text-sm">Regularly update your blocklists to stay protected</p>
+                                    </div>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="text-yellow-500 flex-shrink-0">⚠️</span>
+                                    <div>
+                                        <span class="font-medium text-gray-900">Privacy:</span>
+                                        <p class="text-sm">These lists are personal and not affiliated with any service</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             `;
             container.innerHTML = html;
